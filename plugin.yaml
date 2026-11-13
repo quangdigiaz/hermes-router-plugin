@@ -1,5 +1,5 @@
 name: hermes-router
-version: 0.2.0
+version: 0.2.1
 description: "Hermes Router for Hermes Agent — ONE install wires all three surfaces to your self-hosted router: inference (a model provider: every model and combo in the router's pool, with fail-over, health/cost ranking and one usage ledger), web_search and web_extract (/v1/search, /v1/web/fetch: the router's provider pool, combo fail-over and clean-markdown extraction instead of one vendor key per agent). One URL, one key, one ledger."
 author: Hermes Router
 # ONE kind, on purpose: a manifest declares a single `kind`, and `backend` is the

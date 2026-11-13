@@ -22,7 +22,7 @@ same URL and the same key. Why this arrangement:
   (read on the next provider lookup, no restart). That is the escape hatch if a
   given Hermes build loads plugins after its first provider lookup.
 
-    hermes plugins install quangdigiaz/hermes-router/hermes-plugin --enable
+    hermes plugins install quangdigiaz/hermes-router-plugin --enable
 
 Nothing here is required for either provider: if a Hermes build does not expose
 the CLI or command registration API, both providers still register and their
@@ -33,13 +33,14 @@ changed.
 
 from __future__ import annotations
 
+import argparse
 from typing import Any, Dict, List, Optional
 
 from . import model_profile
 from .config import load_config, normalize_base_url
 from .provider import PROVIDER_NAME, STANDALONE, HermesRouterWebProvider
 
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 
 __all__ = ["register", "HermesRouterWebProvider", "PROVIDER_NAME", "__version__"]
 
@@ -125,11 +126,27 @@ def _print_model_status() -> int:
 
 
 # ── CLI + slash surfaces ────────────────────────────────────────────────────
+def _cli_setup(subparser: argparse.ArgumentParser) -> None:
+    """argparse tree for ``hermes hermes-router`` (required by the current
+    PluginContext.register_cli_command signature — without it the CLI surface
+    is skipped and `hermes hermes-router …` does not exist). REMAINDER keeps
+    flags like --live/--format as raw strings so _dispatch_cli's own subcommand
+    parsing stays authoritative."""
+    subparser.add_argument(
+        "args",
+        nargs=argparse.REMAINDER,
+        help="status | setup | doctor [--live] | model [--live] | search <query> | fetch <url> [--format markdown]",
+    )
+
+
 def _argv(args: Any) -> List[str]:
     if args is None:
         return []
     if isinstance(args, str):
         return args.split()
+    remainder = getattr(args, "args", None)  # argparse.Namespace from setup_fn
+    if remainder is not None:
+        return [str(item) for item in remainder]
     try:
         return [str(item) for item in args]
     except TypeError:
@@ -278,6 +295,7 @@ def _register_optional_surfaces(ctx: Any) -> None:
             register_cli(
                 name=CLI_NAME,
                 help="Configure and diagnose the Hermes Router (inference + web search + fetch)",
+                setup_fn=_cli_setup,
                 handler_fn=_dispatch_cli,
                 description="Route Hermes inference, web_search and web_extract through a self-hosted Hermes Router.",
             )

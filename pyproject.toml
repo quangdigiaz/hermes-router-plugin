@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "hermes-router-hermes"
-version = "0.2.0"
+version = "0.2.1"
 description = "Hermes Router for Hermes Agent - inference, web search and web fetch through one self-hosted router"
 readme = "README.md"
 license = { text = "MIT" }

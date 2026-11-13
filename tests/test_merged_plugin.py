@@ -219,6 +219,25 @@ class MergedPluginTest(unittest.TestCase):
         self.assertEqual(ctx.cli["name"], "hermes-router")
         self.assertEqual(ctx.slash["name"], "hermes-router-status")
 
+    def test_cli_surface_matches_the_current_host_signature(self):
+        # PluginContext.register_cli_command requires setup_fn — a build
+        # without it logged "missing 1 required positional argument" and the
+        # whole `hermes hermes-router` surface silently vanished.
+        module = load_package({})
+        ctx = FakeCtx()
+        module.register(ctx)
+        self.assertTrue(callable(ctx.cli["setup_fn"]), "setup_fn is mandatory in the current host API")
+        self.assertTrue(callable(ctx.cli["handler_fn"]))
+
+        # The subparser must capture subcommand + flags verbatim so
+        # _dispatch_cli's own parsing stays authoritative.
+        import argparse
+        parser = argparse.ArgumentParser()
+        ctx.cli["setup_fn"](parser)
+        ns = parser.parse_args(["doctor", "--live"])
+        self.assertEqual(module._argv(ns), ["doctor", "--live"])
+        self.assertEqual(module._argv("search hermes"), ["search", "hermes"])
+
     # ── the manifest ────────────────────────────────────────────────────────
     def test_manifest_declares_the_web_provider_under_its_registered_name(self):
         module = load_package({})
