@@ -1,0 +1,27 @@
+name: hermes-router
+version: 0.2.0
+description: "Hermes Router for Hermes Agent — ONE install wires all three surfaces to your self-hosted router: inference (a model provider: every model and combo in the router's pool, with fail-over, health/cost ranking and one usage ledger), web_search and web_extract (/v1/search, /v1/web/fetch: the router's provider pool, combo fail-over and clean-markdown extraction instead of one vendor key per agent). One URL, one key, one ledger."
+author: Hermes Router
+# ONE kind, on purpose: a manifest declares a single `kind`, and `backend` is the
+# documented path for a web provider — and the path whose loader IMPORTS this
+# package. That import is what also registers the model-provider profile
+# (`hermes_router_hermes/model_profile.py`, module level), so a single install
+# command covers inference + search + fetch with no second plugin.
+#
+# The model half is deliberately NOT declared here: `provides_model_providers`
+# is not a documented manifest field, and inventing one would promise a loader
+# that does not exist. Hermes learns about the profile through
+# `register_provider` — the documented interface the import above performs.
+kind: backend
+python_runtime: external
+provides_web_providers:
+  - hermes-router
+requires_env:
+  - name: HERMES_ROUTER_URL
+    description: "Base URL of your Hermes Router (e.g. https://router.example.com or http://localhost:20128). It serves inference (/v1/chat/completions), web search (/v1/search), web extract (/v1/web/fetch) and the model catalogue (/v1/models). HERMES_ROUTER_BASE_URL works too."
+    secret: false
+  - name: HERMES_ROUTER_KEY
+    description: "Router API key — only needed when the router requires auth (Dashboard → Keys). The same key is used for inference, search and fetch."
+    secret: true
+homepage: "https://github.com/quangdigiaz/hermes-router-plugin"
+license: MIT

@@ -1,0 +1,46 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "hermes-router-hermes"
+version = "0.2.0"
+description = "Hermes Router for Hermes Agent - inference, web search and web fetch through one self-hosted router"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+authors = [{ name = "Hermes Router" }]
+keywords = ["hermes", "hermes-router", "model-provider", "web-search", "web-fetch", "ai-agent"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Internet :: WWW/HTTP :: Indexing/Search",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+# No runtime dependencies on purpose: the plugin only POSTs JSON to the
+# operator's own router, so `python_runtime: external` costs them nothing to
+# install. (The reference plugin pulls httpx; urllib is enough here.)
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/quangdigiaz/hermes-router"
+Repository = "https://github.com/quangdigiaz/hermes-router"
+
+[project.entry-points."hermes_agent.plugins"]
+hermes-router = "hermes_router_hermes"
+
+[tool.hatch.build.targets.wheel]
+packages = ["hermes_router_hermes"]
+
+[tool.mypy]
+python_version = "3.10"
+explicit_package_bases = true
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
