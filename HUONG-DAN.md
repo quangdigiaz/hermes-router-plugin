@@ -23,13 +23,13 @@ khai thì hứa một loader không có.
 ## Cài đặt
 
 ```bash
-hermes plugins install quangdigiaz/hermes-router/hermes-plugin --enable
+hermes plugins install quangdigiaz/hermes-router-plugin --enable
 ```
 
 hoặc pip:
 
 ```bash
-pip install "git+https://github.com/quangdigiaz/hermes-router#subdirectory=hermes-plugin"
+pip install "git+https://github.com/quangdigiaz/hermes-router-plugin"
 ```
 
 ## Cấu hình — đúng 1 export
